@@ -216,6 +216,6 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
       });
       thisCoin["ytd"].push(ytdInterval);
     }
-    await thisCoin.save();
+    thisCoin.save().then((coin) => console.log("saved: ", coin.symbol));
   });
 };
