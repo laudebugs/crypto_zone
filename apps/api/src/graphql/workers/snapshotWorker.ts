@@ -8,9 +8,20 @@ import { IRawCurrencyTicker } from "nomics";
 import nomicsClient from "../../clients/nomics";
 import CryptoCurrency, { CryptoModel } from "../../models/CryptoCurrency";
 import { IntervalModel } from "../../models/Interval";
-import { SnapshotModel } from "../../models/Snapshot";
-
+import Snapshot, { SnapshotModel } from "../../models/Snapshot";
+import { pubsub, pusher, SnapShotPubSub } from "../pubsub";
+import { gql } from "apollo-server";
+import CryptoCurrencyResolver from "../resolvers/CryptoCurrencyResolver";
+import { Resolver } from "type-graphql";
 const scheduler = new ToadScheduler();
+
+const SNAPSHOT_MUTATION = gql`
+  mutation NewSnapshot($snapshot: Snapshot!) {
+    newSnapshot(snapshot: $snapshot)
+  }
+`;
+
+const cryptoResolver: CryptoCurrencyResolver = new CryptoCurrencyResolver();
 
 const tick = async () => {
   return await nomicsClient.currenciesTicker({
@@ -19,11 +30,10 @@ const tick = async () => {
     One or more strings can be provided. If not provided, **all** are used.
     The intervals specified will affect what is returned in the response (see below)
   */
-    interval: ["1d"], // '1d', '7d', '30d', '365d', 'ytd'
-    /*
-    Limit the returned currencies to the ones in the following array. If not
-    specified, **all** will be returned
-  */
+    interval: ["1d", "7d", "30d", "365d", "ytd"],
+    //   Limit the returned currencies to the ones in the following array. If not
+    //   specified, **all** will be returned
+    // */
     ids: ["BTC", "ETH", "LTC", "XMR", "DOGE", "XRP"],
     /*
     Specify the currency to quote all returned prices in
@@ -56,15 +66,28 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
       symbol: coin.symbol,
     });
     if (!!thisCoin) {
-      const snapshot = await SnapshotModel.create({
+      const snapshot: Snapshot = await SnapshotModel.create({
+        symbol: coin.symbol,
         price: coin.price,
-        marketCap: coin.marketCap,
+        marketCap: coin.market_cap,
         circulating_supply: coin.circulating_supply,
         price_date: coin.price_date,
         price_timestamp: coin.price_timestamp,
       });
       thisCoin.snapshots.push(snapshot);
 
+      await pubsub.publish("SNAPSHOT", { listenSnapshots: snapshot });
+
+      // try {
+      //   //@ts-ignore
+      //   await cryptoResolver.work(snapshot);
+      // } catch (error) {
+      //   console.log(error.message);
+      // }
+      pusher.trigger("SNAPSHOT", "listenSnapshots", {
+        message: snapshot,
+      });
+      // console.log(pub);
       const interval = coin["1d"];
       const oneDayInterval = await IntervalModel.create({
         volume: interval.volume,
@@ -75,9 +98,9 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: interval.market_cap_change,
         market_cap_change_pct: interval.market_cap_change_pct,
       });
-      thisCoin["1d"].push(oneDayInterval);
+      thisCoin["7d"].push(oneDayInterval);
 
-      const interval7d = coin["1d"];
+      const interval7d = coin["7d"];
       const sevenDayInterval = await IntervalModel.create({
         volume: interval7d.volume,
         price_change: interval7d.price_change,
@@ -89,7 +112,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
       });
       thisCoin["7d"].push(sevenDayInterval);
 
-      const interval30d = coin["1d"];
+      const interval30d = coin["30d"];
       const thirtyDayInterval = await IntervalModel.create({
         volume: interval30d.volume,
         price_change: interval30d.price_change,
@@ -101,7 +124,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
       });
       thisCoin["30d"].push(thirtyDayInterval);
 
-      const interval365d = coin["1d"];
+      const interval365d = coin["365d"];
       const yearInterval = await IntervalModel.create({
         volume: interval365d.volume,
         price_change: interval365d.price_change,
@@ -111,9 +134,9 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: interval365d.market_cap_change,
         market_cap_change_pct: interval365d.market_cap_change_pct,
       });
-      thisCoin["365"].push(yearInterval);
+      thisCoin["365d"].push(yearInterval);
 
-      const intervalytd = coin["1d"];
+      const intervalytd = coin["ytd"];
       const ytdInterval = await IntervalModel.create({
         volume: intervalytd.volume,
         price_change: intervalytd.price_change,
@@ -143,18 +166,21 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         "1d": [],
         "7d": [],
         "30d": [],
-        "365": [],
+        "365d": [],
         ytd: [],
         snapshots: [],
       });
       const snapshot = await SnapshotModel.create({
+        symbol: coin.symbol,
         price: coin.price,
-        marketCap: coin.marketCap,
+        marketCap: coin.market_cap,
         circulating_supply: coin.circulating_supply,
         price_date: coin.price_date,
         price_timestamp: coin.price_timestamp,
       });
       thisCoin.snapshots.push(snapshot);
+
+      pubsub.publish("listenSnapshots", snapshot);
 
       const interval = coin["1d"];
       const oneDayInterval = await IntervalModel.create({
@@ -168,7 +194,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
       });
       thisCoin["1d"].push(oneDayInterval);
 
-      const interval7d = coin["1d"];
+      const interval7d = coin["7d"];
       const sevenDayInterval = await IntervalModel.create({
         volume: interval7d.volume,
         price_change: interval7d.price_change,
@@ -180,7 +206,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
       });
       thisCoin["7d"].push(sevenDayInterval);
 
-      const interval30d = coin["1d"];
+      const interval30d = coin["30d"];
       const thirtyDayInterval = await IntervalModel.create({
         volume: interval30d.volume,
         price_change: interval30d.price_change,
@@ -192,7 +218,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
       });
       thisCoin["30d"].push(thirtyDayInterval);
 
-      const interval365d = coin["1d"];
+      const interval365d = coin["365d"];
       const yearInterval = await IntervalModel.create({
         volume: interval365d.volume,
         price_change: interval365d.price_change,
@@ -202,9 +228,9 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: interval365d.market_cap_change,
         market_cap_change_pct: interval365d.market_cap_change_pct,
       });
-      thisCoin["365"].push(yearInterval);
+      thisCoin["365d"].push(yearInterval);
 
-      const intervalytd = coin["1d"];
+      const intervalytd = coin["ytd"];
       const ytdInterval = await IntervalModel.create({
         volume: intervalytd.volume,
         price_change: intervalytd.price_change,
