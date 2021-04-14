@@ -5,6 +5,10 @@ import { prop, getModelForClass } from "@typegoose/typegoose";
 export default class Snapshot {
   @Field()
   @prop()
+  public symbol?: string;
+
+  @Field()
+  @prop()
   public price?: number;
 
   @Field()
