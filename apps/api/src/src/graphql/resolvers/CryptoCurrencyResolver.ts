@@ -61,7 +61,7 @@ export default class CryptoCurrencyResolver {
         symbol: symbol,
       });
 
-      return crypto.snapshots;
+      return crypto.snapshots.slice(crypto.snapshots.length - 1000);
     } catch (error) {
       return new GraphQLError(error);
     }
