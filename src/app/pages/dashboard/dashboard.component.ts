@@ -1,5 +1,5 @@
 import { NomicsService } from './../../../services/nomics.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { interval } from 'rxjs/internal/observable/interval';
 import { startWith, switchMap } from 'rxjs/operators';
 import { multi } from '../../components/ticker/data';
@@ -13,6 +13,7 @@ import { Location } from '@angular/common';
 })
 export class DashboardComponent implements OnInit {
   selectedCoin: Coin;
+
   coins: Coin[] = [
     { name: 'BTC' },
     { name: 'ETH' },
@@ -27,8 +28,10 @@ export class DashboardComponent implements OnInit {
     const path = this.location.path().substr(1);
     if (path.length > 0) {
       const selected = this.coins.find((coin) => coin.name === path);
+
       this.selectedCoin = selected;
     }
+    console.log(this.selectedCoin);
   }
 
   ngOnInit(): void {}

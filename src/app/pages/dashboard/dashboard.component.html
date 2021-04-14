@@ -23,7 +23,7 @@
     </span>
   </mat-drawer>
   <mat-drawer-content>
-    <app-ticker></app-ticker>
+    <app-ticker [selected]="selectedCoin"></app-ticker>
     <app-market-cap></app-market-cap>
     <app-supply-over-max></app-supply-over-max>
   </mat-drawer-content>

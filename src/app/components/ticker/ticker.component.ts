@@ -1,5 +1,6 @@
+import { Coin } from 'src/services/Models/Coin';
 import { TickerService } from './../../../services/ticker.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChange } from '@angular/core';
 import { interval } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import { NomicsService } from 'src/services/nomics.service';
@@ -12,7 +13,10 @@ import { SnapShot } from 'src/services/Models/SnapShot';
   styleUrls: ['./ticker.component.scss'],
 })
 export class TickerComponent implements OnInit {
-  view: [number, number] = [700, 300];
+  @Input()
+  selected!: Coin;
+
+  view: [number, number] = [700, 700];
   multi: any[] = multi;
   legend: boolean = true;
   showLabels: boolean = true;
@@ -24,14 +28,7 @@ export class TickerComponent implements OnInit {
   xAxisLabel: string = 'Time';
   yAxisLabel: string = 'Price';
   timeline: boolean = true;
-  data = [
-    { name: 'BTC', series: [] },
-    { name: 'ETH', series: [] },
-    { name: 'LTC', series: [] },
-    { name: 'XMR', series: [] },
-    { name: 'XRP', series: [] },
-    { name: 'DOGE', series: [] },
-  ];
+  data = [];
   snapshots: SnapShot[] = [];
 
   colorScheme = {
@@ -42,17 +39,34 @@ export class TickerComponent implements OnInit {
     private tickerService: TickerService
   ) {}
 
-  ngOnInit(): void {
+  ngOnChanges(changes: { [property: string]: SimpleChange }) {
+    console.log(changes);
+    // this.data = [{ name: this.selected.name, series: [] }];
+    // this.getTickData();
+  }
+
+  getTickData() {
     this.tickerService
-      .getTicker('BTC')
+      .getTicker(this.selected.name)
       .valueChanges.subscribe(({ data, loading }: any) => {
-        console.log(data.getSnapShots.length);
-        this.snapshots = [
-          ...this.snapshots,
-          ...data.getSnapShots.slice(this.snapshots.length),
-        ];
-        console.log(this.snapshots);
+        data.getSnapShots
+          .slice(this.snapshots.length)
+          .map((point: SnapShot) => {
+            const newData = {
+              name: new Date(point.price_timestamp),
+              value: point.price,
+            };
+            const tempData = this.data;
+            tempData[0].series.push(newData);
+            this.data = [...tempData];
+          });
       });
+  }
+  ngOnInit(): void {
+    console.log(this.selected);
+    this.data = [{ name: this.selected.name, series: [] }];
+    this.getTickData();
+
     // this.nomicsService.getCurrencyTicker().subscribe((result: any) => {
     //   console.log(result);
     //   result.forEach((data: any) => {
