@@ -1,0 +1,68 @@
+span.body {
+  font-family: "JetBrains Mono", monospace;
+}
+mat-toolbar {
+  padding: 0;
+  height: 8vh;
+  display: flex;
+  flex-direction: row;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  font-size: 200%;
+  color: var(--fashion-fuchsia);
+
+  span.logo {
+    height: 80%;
+    width: 7vw;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+
+    align-content: center;
+    img {
+      height: 100%;
+    }
+  }
+  span.title {
+    width: 92vw;
+  }
+}
+mat-drawer-container {
+  min-height: 92vh;
+  mat-drawer {
+    width: 7vw;
+  }
+  mat-drawer {
+    background-color: var(--medium-blue);
+    color: var(--old-lace);
+
+    span.options {
+      padding-top: 15%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+      h2 {
+        padding: 2% 0 2% 0;
+        width: 100%;
+        text-align: center;
+        font-weight: 500;
+        font-family: "JetBrains Mono", monospace;
+      }
+      h2:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  mat-drawer-content {
+    background-color: var(--old-lace);
+    min-height: 92vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    div {
+      width: 50%;
+    }
+  }
+}

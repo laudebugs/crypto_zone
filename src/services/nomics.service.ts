@@ -15,7 +15,7 @@ export class NomicsService {
     // nomicsClient.currenciesTicker().then((data) => (currencies = data));
     // console.log(currencies);
 
-    const string = `https://api.nomics.com/v1/currencies/ticker?key=${api_key}&ids=BTC,ETH,LTC,XMR&1d,30d&convert=USD&per-page=100&page=1`;
+    const string = `https://api.nomics.com/v1/currencies/ticker?key=${api_key}&ids=BTC,ETH,LTC,XMR,DOGE,XRP&1d,30d&convert=USD&per-page=100&page=1`;
 
     const params = {
       key: api_key,

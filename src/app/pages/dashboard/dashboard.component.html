@@ -1,23 +1,30 @@
 <mat-toolbar>
-  <span>Crypto Dashboard</span>
+  <span class="logo">
+    <img src="../../../assets/icon.png" alt="" />
+  </span>
+  <span class="title">Crypto Zone</span>
 </mat-toolbar>
 
-<div>
-  <ngx-charts-line-chart
-    [view]="view"
-    [scheme]="colorScheme"
-    [legend]="legend"
-    [showXAxisLabel]="showXAxisLabel"
-    [showYAxisLabel]="showYAxisLabel"
-    [xAxis]="xAxis"
-    [yAxis]="yAxis"
-    [xAxisLabel]="xAxisLabel"
-    [yAxisLabel]="yAxisLabel"
-    [timeline]="timeline"
-    [results]="multi"
-    (select)="onSelect($event)"
-    (activate)="onActivate($event)"
-    (deactivate)="onDeactivate($event)"
-  >
-  </ngx-charts-line-chart>
-</div>
+<mat-drawer-container class="example-container">
+  <mat-drawer mode="side" opened>
+    <span class="options">
+      <h2
+        *ngFor="let coin of coins"
+        [ngStyle]="{
+          color:
+            coin.name == selectedCoin.name
+              ? 'var(--purple-pizzazz)'
+              : 'var(--old-lace)'
+        }"
+        (click)="selectCoin(coin)"
+      >
+        {{ coin.name }}
+      </h2>
+    </span>
+  </mat-drawer>
+  <mat-drawer-content>
+    <app-ticker></app-ticker>
+    <app-market-cap></app-market-cap>
+    <app-supply-over-max></app-supply-over-max>
+  </mat-drawer-content>
+</mat-drawer-container>

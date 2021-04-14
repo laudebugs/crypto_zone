@@ -1,0 +1,13 @@
+<div class="content">
+  <h2>Market Cap</h2>
+  <ngx-charts-tree-map
+    [view]="view"
+    [scheme]="colorScheme"
+    [results]="single"
+    [gradient]="gradient"
+    [animations]="animations"
+    [labelFormatting]="labelFormatting"
+    (select)="onSelect($event)"
+  >
+  </ngx-charts-tree-map>
+</div>
