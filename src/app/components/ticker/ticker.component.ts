@@ -51,22 +51,24 @@ export class TickerComponent implements OnInit {
   }
 
   getTickData() {
+    console.log(this.selected.name);
     this.tickerService
       .getTicker(this.selected.name)
       .valueChanges.subscribe(({ data, loading }: any) => {
         console.log(data);
-        data.getSnapShots
-          .slice(this.snapshots.length)
-          .map((point: SnapShot) => {
-            const newData = {
-              name: new Date(point.price_timestamp),
-              value: point.price,
-            };
-            const tempData = this.data;
-            tempData[0].series.push(newData);
-            this.data = [...tempData];
-            this.snapshots.push(point);
-          });
+        const tempData = this.data;
+        tempData[0].series = [];
+        data.getSnapShots.map((point: SnapShot) => {
+          const newData = {
+            name: new Date(point.price_timestamp),
+            value: point.price,
+          };
+
+          tempData[0].series.push(newData);
+
+          // this.snapshots.push(point);
+        });
+        this.data = [...tempData];
       });
   }
   ngOnInit(): void {
