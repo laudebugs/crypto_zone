@@ -27,8 +27,8 @@ export class MarketCapComponent implements OnInit {
       results.map((coin) => {
         data.push({ name: coin.name, value: +coin.market_cap });
       });
-      console.log(data);
-      console.log(single);
+      // console.log(data);
+      // console.log(single);
       Object.assign(this, { data });
     });
   }

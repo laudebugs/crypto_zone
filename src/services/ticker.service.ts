@@ -22,7 +22,7 @@ export class TickerService {
     return this.apollo.watchQuery({
       query: GET_TICKER_QUERY,
       variables: { symbol: symbol },
-      pollInterval: 1500,
+      pollInterval: 15000,
     });
   }
 }

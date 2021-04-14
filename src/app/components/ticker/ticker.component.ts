@@ -6,6 +6,7 @@ import { startWith, switchMap } from 'rxjs/operators';
 import { NomicsService } from 'src/services/nomics.service';
 import { multi } from './data';
 import { SnapShot } from 'src/services/Models/SnapShot';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-ticker',
@@ -30,7 +31,7 @@ export class TickerComponent implements OnInit {
   timeline: boolean = true;
   data = [];
   snapshots: SnapShot[] = [];
-
+  subscription: Subscription;
   colorScheme = {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5'],
   };
@@ -40,8 +41,12 @@ export class TickerComponent implements OnInit {
   ) {}
 
   ngOnChanges(changes: { [property: string]: SimpleChange }) {
+    // if (!!changes.selected.previousValue) {
+    //   this.subscription.unsubscribe();
+    // }
     console.log(changes);
-    // this.data = [{ name: this.selected.name, series: [] }];
+    this.data = [{ name: this.selected.name, series: [] }];
+    this.snapshots = [];
     // this.getTickData();
   }
 
@@ -49,6 +54,7 @@ export class TickerComponent implements OnInit {
     this.tickerService
       .getTicker(this.selected.name)
       .valueChanges.subscribe(({ data, loading }: any) => {
+        console.log(data);
         data.getSnapShots
           .slice(this.snapshots.length)
           .map((point: SnapShot) => {
@@ -59,6 +65,7 @@ export class TickerComponent implements OnInit {
             const tempData = this.data;
             tempData[0].series.push(newData);
             this.data = [...tempData];
+            this.snapshots.push(point);
           });
       });
   }
