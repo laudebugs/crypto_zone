@@ -44,12 +44,10 @@ class SnapshotInput extends Snapshot {
 }
 @Resolver((of) => CryptoCurrency)
 export default class CryptoCurrencyResolver {
-  work(snapshot: Snapshot) {
-    this.newSnapshot(snapshot);
-  }
-  @Query()
-  saySth(): String {
-    return "Hello";
+  @Query((returns) => CryptoCurrency)
+  async getCoin(@Arg("symbol") symbol: string): Promise<CryptoCurrency> {
+    const coin: CryptoCurrency = await CryptoModel.findOne({ symbol: symbol });
+    return coin;
   }
 
   @Query((returns) => [Snapshot], { nullable: true })
@@ -57,11 +55,12 @@ export default class CryptoCurrencyResolver {
     @Arg("symbol") symbol: string
   ): Promise<Snapshot[] | GraphQLError> {
     try {
+      console.log("ici");
       const crypto: CryptoCurrency = await CryptoModel.findOne({
         symbol: symbol,
       });
 
-      return crypto.snapshots.slice(crypto.snapshots.length - 1000);
+      return crypto.snapshots;
     } catch (error) {
       return new GraphQLError(error);
     }

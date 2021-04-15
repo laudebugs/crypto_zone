@@ -77,19 +77,19 @@ export default class CryptoCurrency {
 
   @Field((type) => [Interval])
   @prop({ type: () => Interval, default: [] })
-  public "1d"?: Interval[];
+  public day?: Interval[];
 
   @Field((type) => [Interval])
   @prop({ type: () => Interval, default: [] })
-  public "7d"?: Interval[];
+  public week?: Interval[];
 
   @Field((type) => [Interval])
   @prop({ type: () => Interval, default: [] })
-  public "30d"?: Interval[];
+  public month?: Interval[];
 
   @Field((type) => [Interval])
   @prop({ type: () => Interval, default: [] })
-  public "365d"?: Interval[];
+  public year?: Interval[];
 
   @Field((type) => [Interval])
   @prop({ type: () => Interval, default: [] })
