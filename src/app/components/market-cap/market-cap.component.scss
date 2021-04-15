@@ -3,9 +3,14 @@ div.content {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  text-align: center;
+  width: 100%;
   h2 {
     color: var(--fashion-fuchsia);
     font-family: "JetBrains Mono", monospace;
     text-align: center;
+  }
+  ngx-charts-tree-map {
+    align-self: center;
   }
 }
