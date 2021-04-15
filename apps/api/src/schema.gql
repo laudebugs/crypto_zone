@@ -3,18 +3,53 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type CryptoCurrency {
+  currency: String!
+  day: [Interval!]!
+  first_candle: DateTime!
+  first_order_book: DateTime!
+  first_trade: DateTime!
+  high: Float!
+  high_timestamp: DateTime!
+  logo_url: String!
+  market_cap: Float!
+  month: [Interval!]!
+  name: String!
+  num_exchanges: Float!
+  num_pairs: Float!
+  num_pairs_unmapped: Float!
+  rank: Float!
+  rank_delta: Float!
+  snapshots: [Snapshot!]!
+  status: String!
+  symbol: String!
+  week: [Interval!]!
+  year: [Interval!]!
+  ytd: [Interval!]!
+}
+
 """
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
 scalar DateTime
+
+type Interval {
+  market_cap_change: Float!
+  market_cap_change_pct: Float!
+  price_change: Float!
+  price_change_pct: Float!
+  volume: Float!
+  volume_change: Float!
+  volume_change_pct: Float!
+}
 
 type Mutation {
   newSnapshot(snapshot: SnapshotInput!): String!
 }
 
 type Query {
+  getCoin(symbol: String!): CryptoCurrency!
   getSnapShots(symbol: String!): [Snapshot!]
-  saySth: String!
 }
 
 type Snapshot {

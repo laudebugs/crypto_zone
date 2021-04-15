@@ -54,7 +54,7 @@ const task = new AsyncTask(
   }
 );
 
-const job = new SimpleIntervalJob({ seconds: 10 }, task);
+const job = new SimpleIntervalJob({ seconds: 30 }, task);
 
 export const scheduleSnapShots = () => {
   scheduler.addSimpleIntervalJob(job);
@@ -74,7 +74,9 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         price_date: coin.price_date,
         price_timestamp: coin.price_timestamp,
       });
+
       thisCoin.snapshots.push(snapshot);
+      if (thisCoin.snapshots.length > 240) thisCoin.snapshots.shift();
 
       await pubsub.publish("SNAPSHOT", { listenSnapshots: snapshot });
 
@@ -84,9 +86,11 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
       // } catch (error) {
       //   console.log(error.message);
       // }
+
       pusher.trigger("SNAPSHOT", "listenSnapshots", {
         message: snapshot,
       });
+
       // console.log(pub);
       const interval = coin["1d"];
       const oneDayInterval = await IntervalModel.create({
@@ -98,7 +102,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: interval.market_cap_change,
         market_cap_change_pct: interval.market_cap_change_pct,
       });
-      thisCoin["7d"].push(oneDayInterval);
+      thisCoin.day.push(oneDayInterval);
 
       const interval7d = coin["7d"];
       const sevenDayInterval = await IntervalModel.create({
@@ -110,7 +114,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: interval7d.market_cap_change,
         market_cap_change_pct: interval7d.market_cap_change_pct,
       });
-      thisCoin["7d"].push(sevenDayInterval);
+      thisCoin.week.push(sevenDayInterval);
 
       const interval30d = coin["30d"];
       const thirtyDayInterval = await IntervalModel.create({
@@ -122,7 +126,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: interval30d.market_cap_change,
         market_cap_change_pct: interval30d.market_cap_change_pct,
       });
-      thisCoin["30d"].push(thirtyDayInterval);
+      thisCoin.month.push(thirtyDayInterval);
 
       const interval365d = coin["365d"];
       const yearInterval = await IntervalModel.create({
@@ -134,7 +138,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: interval365d.market_cap_change,
         market_cap_change_pct: interval365d.market_cap_change_pct,
       });
-      thisCoin["365d"].push(yearInterval);
+      thisCoin.year.push(yearInterval);
 
       const intervalytd = coin["ytd"];
       const ytdInterval = await IntervalModel.create({
@@ -146,7 +150,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: intervalytd.market_cap_change,
         market_cap_change_pct: intervalytd.market_cap_change_pct,
       });
-      thisCoin["ytd"].push(ytdInterval);
+      thisCoin.ytd.push(ytdInterval);
     } else {
       thisCoin = await CryptoModel.create({
         symbol: coin.symbol,
@@ -163,10 +167,10 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         rank_delta: coin.rank_delta,
         high: coin.high,
         high_timestamp: coin.high_timestamp,
-        "1d": [],
-        "7d": [],
-        "30d": [],
-        "365d": [],
+        day: [],
+        week: [],
+        month: [],
+        year: [],
         ytd: [],
         snapshots: [],
       });
@@ -179,6 +183,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         price_timestamp: coin.price_timestamp,
       });
       thisCoin.snapshots.push(snapshot);
+      if (thisCoin.snapshots.length > 240) thisCoin.snapshots.shift();
 
       pubsub.publish("listenSnapshots", snapshot);
 
@@ -192,7 +197,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: interval.market_cap_change,
         market_cap_change_pct: interval.market_cap_change_pct,
       });
-      thisCoin["1d"].push(oneDayInterval);
+      thisCoin.day.push(oneDayInterval);
 
       const interval7d = coin["7d"];
       const sevenDayInterval = await IntervalModel.create({
@@ -204,7 +209,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: interval7d.market_cap_change,
         market_cap_change_pct: interval7d.market_cap_change_pct,
       });
-      thisCoin["7d"].push(sevenDayInterval);
+      thisCoin.week.push(sevenDayInterval);
 
       const interval30d = coin["30d"];
       const thirtyDayInterval = await IntervalModel.create({
@@ -216,7 +221,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: interval30d.market_cap_change,
         market_cap_change_pct: interval30d.market_cap_change_pct,
       });
-      thisCoin["30d"].push(thirtyDayInterval);
+      thisCoin.month.push(thirtyDayInterval);
 
       const interval365d = coin["365d"];
       const yearInterval = await IntervalModel.create({
@@ -228,7 +233,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: interval365d.market_cap_change,
         market_cap_change_pct: interval365d.market_cap_change_pct,
       });
-      thisCoin["365d"].push(yearInterval);
+      thisCoin.year.push(yearInterval);
 
       const intervalytd = coin["ytd"];
       const ytdInterval = await IntervalModel.create({
@@ -240,7 +245,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
         market_cap_change: intervalytd.market_cap_change,
         market_cap_change_pct: intervalytd.market_cap_change_pct,
       });
-      thisCoin["ytd"].push(ytdInterval);
+      thisCoin.ytd.push(ytdInterval);
     }
     thisCoin.save().then((coin) => console.log("saved: ", coin.symbol));
   });
