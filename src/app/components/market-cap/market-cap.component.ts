@@ -9,7 +9,7 @@ import { single } from './data';
 })
 export class MarketCapComponent implements OnInit {
   single: any[];
-  view: [number, number] = [700, 400];
+  view: [number, number] = [600, 300];
 
   // options
   gradient: boolean = false;

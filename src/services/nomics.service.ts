@@ -24,4 +24,9 @@ export class NomicsService {
 
     return this.http.get(string);
   }
+  getCoin(coin: string) {
+    const string = `https://api.nomics.com/v1/currencies/ticker?key=${api_key}&ids=${coin}&1d,30d&convert=USD&per-page=100&page=1`;
+
+    return this.http.get(string);
+  }
 }

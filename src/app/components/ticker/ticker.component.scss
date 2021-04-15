@@ -1,3 +1,5 @@
 div.content {
   font-family: "JetBrains Mono", monospace;
+  display: flex;
+  flex-direction: column;
 }

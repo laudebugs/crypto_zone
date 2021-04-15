@@ -30,10 +30,9 @@ mat-toolbar {
 }
 mat-drawer-container {
   min-height: 92vh;
+
   mat-drawer {
     width: 7vw;
-  }
-  mat-drawer {
     background-color: var(--medium-blue);
     color: var(--old-lace);
 
@@ -56,13 +55,47 @@ mat-drawer-container {
     }
   }
   mat-drawer-content {
+    // width: 93vw;
+    width: 100%;
+    padding-top: 1%;
     background-color: var(--old-lace);
     min-height: 92vh;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-    div {
+    div.coin {
+      height: 100%;
       width: 50%;
+      display: inline-flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: center;
+      div.coin__stats {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        h1 {
+          color: var(--blue-violet);
+          font-family: "JetBrains Mono", monospace;
+        }
+      }
+
+      app-ticker {
+        margin: 2.5%;
+      }
+      app-coin-stats {
+      }
+    }
+    div.general {
+      width: 50%;
+      height: 100%;
+      display: inline-flex;
+      justify-content: center;
+      width: auto;
+      align-items: flex-start;
+      app-market-cap {
+        width: 100%;
+      }
     }
   }
 }

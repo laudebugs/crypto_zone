@@ -1,5 +1,5 @@
 import { Coin } from 'src/services/Models/Coin';
-import { TickerService } from './../../../services/ticker.service';
+import { TickerService } from '../../../services/ticker.service';
 import { Component, Input, OnInit, SimpleChange } from '@angular/core';
 import { interval } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
@@ -15,11 +15,11 @@ import { Subscription } from 'rxjs';
 })
 export class TickerComponent implements OnInit {
   @Input()
-  selected!: Coin;
+  selected!: string;
 
-  view: [number, number] = [700, 700];
+  view: [number, number] = [600, 400];
   multi: any[] = multi;
-  legend: boolean = true;
+  legend: boolean = false;
   showLabels: boolean = true;
   animations: boolean = true;
   xAxis: boolean = true;
@@ -28,7 +28,7 @@ export class TickerComponent implements OnInit {
   showXAxisLabel: boolean = true;
   xAxisLabel: string = 'Time';
   yAxisLabel: string = 'Price';
-  timeline: boolean = true;
+  timeline: boolean = false;
   data = [];
   snapshots: SnapShot[] = [];
   subscription: Subscription;
@@ -41,40 +41,56 @@ export class TickerComponent implements OnInit {
   ) {}
 
   ngOnChanges(changes: { [property: string]: SimpleChange }) {
-    // if (!!changes.selected.previousValue) {
-    //   this.subscription.unsubscribe();
-    // }
+    if (!!changes.selected.previousValue) {
+      // this.subscription.unsubscribe();
+    }
     console.log(changes);
-    this.data = [{ name: this.selected.name, series: [] }];
+    this.subscription?.unsubscribe();
+    this.data = [{ name: changes.selected.currentValue.name, series: [] }];
     this.snapshots = [];
-    // this.getTickData();
+    this.subscription = this.getTickData().subscribe(
+      ({ data, loading }: any) => {
+        console.log(data.getSnapShots[0].symbol);
+        data.getSnapShots
+          .slice(this.snapshots.length)
+          .map((point: SnapShot) => {
+            const newData = {
+              name: new Date(point.price_timestamp),
+              value: point.price,
+            };
+            const tempData = this.data;
+            tempData[0].series.push(newData);
+            this.data = [...tempData];
+            this.snapshots.push(point);
+          });
+      }
+    );
   }
 
   getTickData() {
-    console.log(this.selected.name);
-    this.tickerService
-      .getTicker(this.selected.name)
-      .valueChanges.subscribe(({ data, loading }: any) => {
-        console.log(data);
-        const tempData = this.data;
-        tempData[0].series = [];
-        data.getSnapShots.map((point: SnapShot) => {
-          const newData = {
-            name: new Date(point.price_timestamp),
-            value: point.price,
-          };
-
-          tempData[0].series.push(newData);
-
-          // this.snapshots.push(point);
-        });
-        this.data = [...tempData];
-      });
+    return this.tickerService.getTicker(this.selected).valueChanges;
   }
   ngOnInit(): void {
     console.log(this.selected);
-    this.data = [{ name: this.selected.name, series: [] }];
-    this.getTickData();
+    this.data = [{ name: this.selected, series: [] }];
+    this.subscription = this.getTickData().subscribe(
+      ({ data, loading }: any) => {
+        console.log(data.getSnapShots[0].symbol);
+
+        data.getSnapShots
+          .slice(this.snapshots.length)
+          .map((point: SnapShot) => {
+            const newData = {
+              name: new Date(point.price_timestamp),
+              value: point.price,
+            };
+            const tempData = this.data;
+            tempData[0].series.push(newData);
+            this.data = [...tempData];
+            this.snapshots.push(point);
+          });
+      }
+    );
 
     // this.nomicsService.getCurrencyTicker().subscribe((result: any) => {
     //   console.log(result);

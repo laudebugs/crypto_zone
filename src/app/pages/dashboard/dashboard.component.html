@@ -12,19 +12,27 @@
         *ngFor="let coin of coins"
         [ngStyle]="{
           color:
-            coin.name == selectedCoin.name
+            coin.symbol == selectedCoin
               ? 'var(--purple-pizzazz)'
               : 'var(--old-lace)'
         }"
         (click)="selectCoin(coin)"
       >
-        {{ coin.name }}
+        {{ coin.symbol }}
       </h2>
     </span>
   </mat-drawer>
   <mat-drawer-content>
-    <app-ticker [selected]="selectedCoin"></app-ticker>
-    <app-market-cap></app-market-cap>
-    <app-supply-over-max></app-supply-over-max>
+    <div class="coin">
+      <div class="coin__stats">
+        <h1>{{ coin.name }}</h1>
+      </div>
+
+      <app-ticker [selected]="selectedCoin"></app-ticker>
+      <app-coin-stats [coin]="coin"></app-coin-stats>
+    </div>
+    <div class="general">
+      <app-market-cap></app-market-cap>
+    </div>
   </mat-drawer-content>
 </mat-drawer-container>
