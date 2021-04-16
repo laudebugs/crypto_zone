@@ -21,6 +21,18 @@ require("./database/mongo");
 
   const app = express();
 
+  app.use((req: any, res: any, next: any) => {
+    const allowedOrigins = [
+      "https://crypto-zone.firebaseapp.com",
+      "http://localhost:4200",
+    ];
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+    return next();
+  });
+
   const apolloServer = new ApolloServer({
     schema,
     subscriptions: "/subs",
@@ -37,10 +49,10 @@ require("./database/mongo");
 
   apolloServer.installSubscriptionHandlers(httpServer);
 
-  app.get("*", (req, res) =>
+  app.get("/", (req, res) =>
     res.json({ message: "Welcome to the Crypto Zone API" })
   );
-
+  app.get("/webhook", (req, res) => {});
   const PORT = process.env.PORT || 8000;
   httpServer.listen(PORT, () => {
     console.log(`server running on port ${PORT}`);
