@@ -42,6 +42,8 @@ class SnapshotInput extends Snapshot {
   @Field()
   public price_timestamp?: Date;
 }
+
+
 @Resolver((of) => CryptoCurrency)
 export default class CryptoCurrencyResolver {
   @Query((returns) => CryptoCurrency)
@@ -82,21 +84,13 @@ export default class CryptoCurrencyResolver {
   @Subscription({
     topics: "SNAPSHOT",
   })
-  listenSnapshots(@Root() payload: string): string {
-    console.log("here in sub");
-    console.log(payload);
-    return payload;
-  }
-
-  @Subscription((returns) => Snapshot, {
-    topics: ["SNAPSHOT"],
-    nullable: true,
-  })
-  subscriptionWithFilterToDynamicTopic(
-    @Root() snapshot: Snapshot,
+  listenSnapshots(
+    @Root() snapshotPayload: Snapshot,
     @Args() args: SnapshotArgs
   ): Snapshot {
-    console.log("here");
-    return { ...snapshot };
+    console.log("here in sub");
+    //@ts-ignore
+    const snap: Snapshot = { ...snapshotPayload._doc };
+    return snap;
   }
 }

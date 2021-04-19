@@ -72,6 +72,5 @@ input SnapshotInput {
 }
 
 type Subscription {
-  listenSnapshots: String!
-  subscriptionWithFilterToDynamicTopic: Snapshot
+  listenSnapshots: Snapshot!
 }

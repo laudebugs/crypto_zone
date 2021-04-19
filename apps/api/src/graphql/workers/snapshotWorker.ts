@@ -9,7 +9,7 @@ import nomicsClient from "../../clients/nomics";
 import CryptoCurrency, { CryptoModel } from "../../models/CryptoCurrency";
 import { IntervalModel } from "../../models/Interval";
 import Snapshot, { SnapshotModel } from "../../models/Snapshot";
-import { pubsub, pusher, SnapShotPubSub } from "../pubsub";
+import { emmiter, pubsub, pusher, SnapShotPubSub } from "../pubsub";
 import { gql } from "apollo-server";
 import CryptoCurrencyResolver from "../resolvers/CryptoCurrencyResolver";
 import { Resolver } from "type-graphql";
@@ -78,20 +78,8 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
       thisCoin.snapshots.push(snapshot);
       if (thisCoin.snapshots.length > 240) thisCoin.snapshots.shift();
 
-      await pubsub.publish("SNAPSHOT", { listenSnapshots: snapshot });
+      pubsub.publish("SNAPSHOT", snapshot);
 
-      // try {
-      //   //@ts-ignore
-      //   await cryptoResolver.work(snapshot);
-      // } catch (error) {
-      //   console.log(error.message);
-      // }
-
-      pusher.trigger("SNAPSHOT", "listenSnapshots", {
-        message: snapshot,
-      });
-
-      // console.log(pub);
       const interval = coin["1d"];
       const oneDayInterval = await IntervalModel.create({
         volume: interval.volume,
