@@ -43,31 +43,28 @@ export class TickerComponent implements OnInit, OnDestroy {
 
   constructor(
     private nomicsService: NomicsService,
-    private tickerService: TickerService,
-  ) {
-    
-  }
+    private tickerService: TickerService
+  ) {}
 
   ngOnInit(): void {
     console.log(this.selected);
     this.data = [{ name: this.selected, series: [] }];
-    this.makeNewSubscription()
+    this.makeNewSubscription();
   }
 
   ngOnChanges(changes: { [property: string]: SimpleChange }) {
-   console.log(changes)
+    console.log(changes);
     if (!changes.firstChange) {
-      this.subscription.unsubscribe()
-      // Make a new subscription to the data 
-      this.makeNewSubscription()
-      
+      this.subscription.unsubscribe();
+      // Make a new subscription to the data
+      this.makeNewSubscription();
     }
   }
 
   makeNewSubscription() {
     this.subscription = this.getTickData().subscribe(
       ({ data, loadin }: any) => {
-        console.log(data);
+        console.log('changed: data', data);
 
         const series = data.getSnapShots.map((point) => {
           return this.parse(point);
@@ -77,16 +74,15 @@ export class TickerComponent implements OnInit, OnDestroy {
       }
     );
   }
-  
-  getTickData(coin?:string) {
+
+  getTickData(coin?: string) {
+    // 'BTC'
     return this.tickerService.getTicker(coin || this.selected).valueChanges;
   }
   ngOnDestroy(): void {
-
     this.subscription.unsubscribe();
   }
 
- 
   parse(coin: any) {
     const date = new Date(coin.price_timestamp);
     const point = {
@@ -97,7 +93,6 @@ export class TickerComponent implements OnInit, OnDestroy {
     return point;
   }
 
-  
   // Chart functions
   onSelect(data: any): void {
     console.log('Item clicked', JSON.parse(JSON.stringify(data)));

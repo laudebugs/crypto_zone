@@ -16,6 +16,7 @@ export const GET_TICKER_QUERY = gql`
 export const TICKER_SUB = gql`
   subscription ListenSnapshots {
     listenSnapshots {
+      name
       symbol
       price
       marketCap
