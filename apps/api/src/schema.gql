@@ -55,6 +55,7 @@ type Query {
 type Snapshot {
   circulating_supply: String!
   marketCap: Float!
+  name: String!
   price: Float!
   price_date: DateTime!
   price_timestamp: DateTime!
