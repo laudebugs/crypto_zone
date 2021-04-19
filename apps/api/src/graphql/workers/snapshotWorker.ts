@@ -68,6 +68,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
     if (!!thisCoin) {
       const snapshot: Snapshot = await SnapshotModel.create({
         symbol: coin.symbol,
+        name: coin.name,
         price: coin.price,
         marketCap: coin.market_cap,
         circulating_supply: coin.circulating_supply,
@@ -164,6 +165,7 @@ const parseData = async (data: IRawCurrencyTicker[]) => {
       });
       const snapshot = await SnapshotModel.create({
         symbol: coin.symbol,
+        name: coin.name,
         price: coin.price,
         marketCap: coin.market_cap,
         circulating_supply: coin.circulating_supply,
