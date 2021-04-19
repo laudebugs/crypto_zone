@@ -7,13 +7,14 @@ import { Coin } from 'src/services/Models/Coin';
 import { Location } from '@angular/common';
 import { SimpleChange } from '@angular/core';
 import { CoinService } from 'src/services/coin.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
+  
 export class DashboardComponent implements OnInit {
   selectedCoin!: string;
   coin: Coin = { name: '' };
@@ -27,6 +28,11 @@ export class DashboardComponent implements OnInit {
     { symbol: 'DOGE' },
   ];
   selectedData = [];
+  // static myObservable: Observable<string> = new Observable(res => {
+  //   res.next(this.selectedCoin);
+  // });
+
+
   constructor(
     private location: Location,
     private coinService: CoinService,
@@ -59,6 +65,9 @@ export class DashboardComponent implements OnInit {
   }
 
   selectCoin(coin: Coin) {
+
+
+
     this.coinSub.unsubscribe();
     this.selectedCoin = coin.symbol;
     this.location.replaceState(`/${this.selectedCoin}`);

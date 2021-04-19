@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 
-const GET_TICKER_QUERY = gql`
+export const GET_TICKER_QUERY = gql`
   query GetSnapshots($symbol: String!) {
     getSnapShots(symbol: $symbol) {
       symbol
@@ -9,6 +9,19 @@ const GET_TICKER_QUERY = gql`
       price_timestamp
       price_date
       marketCap
+    }
+  }
+`;
+
+export const TICKER_SUB = gql`
+  subscription ListenSnapshots {
+    listenSnapshots {
+      symbol
+      price
+      marketCap
+      circulating_supply
+      price_date
+      price_timestamp
     }
   }
 `;
