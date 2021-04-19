@@ -17,6 +17,7 @@ require("./database/mongo");
   const schema = await buildSchema({
     resolvers: [CryptoCurrencyResolver],
     emitSchemaFile: true,
+    pubSub: pubsub,
   });
 
   const app = express();
