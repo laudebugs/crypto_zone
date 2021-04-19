@@ -9,6 +9,10 @@ export default class Snapshot {
 
   @Field()
   @prop()
+  public name?: string;
+
+  @Field()
+  @prop()
   public price?: number;
 
   @Field()
