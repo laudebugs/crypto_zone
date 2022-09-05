@@ -1,0 +1,121 @@
+{
+  "projectType": "application",
+  "generators": {
+    "@schematics/angular:component": {
+      "style": "scss",
+      "skipTests": true
+    },
+    "@schematics/angular:class": {
+      "skipTests": true
+    },
+    "@schematics/angular:directive": {
+      "skipTests": true
+    },
+    "@schematics/angular:guard": {
+      "skipTests": true
+    },
+    "@schematics/angular:interceptor": {
+      "skipTests": true
+    },
+    "@schematics/angular:module": {
+      "skipTests": true
+    },
+    "@schematics/angular:pipe": {
+      "skipTests": true
+    },
+    "@schematics/angular:service": {
+      "skipTests": true
+    },
+    "@schematics/angular:application": {
+      "strict": true
+    }
+  },
+  "sourceRoot": "apps/crypto-dashboard/src",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "outputPath": "dist/apps/crypto-dashboard",
+        "index": "apps/crypto-dashboard/src/index.html",
+        "main": "apps/crypto-dashboard/src/main.ts",
+        "polyfills": "apps/crypto-dashboard/src/polyfills.ts",
+        "tsConfig": "apps/crypto-dashboard/tsconfig.app.json",
+        "aot": true,
+        "assets": [
+          "apps/crypto-dashboard/src/favicon.ico",
+          "apps/crypto-dashboard/src/assets"
+        ],
+        "styles": [
+          "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
+          "apps/crypto-dashboard/src/styles.scss"
+        ],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/crypto-dashboard/src/environments/environment.ts",
+              "with": "apps/crypto-dashboard/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2.5mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "browserTarget": "crypto-dashboard:build"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "crypto-dashboard:build:production"
+        }
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "crypto-dashboard:build"
+      }
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "apps/crypto-dashboard/src/test.ts",
+        "polyfills": "apps/crypto-dashboard/src/polyfills.ts",
+        "tsConfig": "apps/crypto-dashboard/tsconfig.spec.json",
+        "karmaConfig": "apps/crypto-dashboard/karma.conf.js",
+        "assets": [
+          "apps/crypto-dashboard/src/favicon.ico",
+          "apps/crypto-dashboard/src/assets"
+        ],
+        "styles": [
+          "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
+          "apps/crypto-dashboard/src/styles.scss"
+        ],
+        "scripts": []
+      }
+    }
+  }
+}
