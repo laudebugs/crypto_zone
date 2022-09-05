@@ -1,6 +1,7 @@
 {
   "version": 2,
   "projects": {
+    "api": "apps/api",
     "crypto-dashboard": "apps/crypto-dashboard",
     "crypto-dashboard-e2e": "apps/crypto-dashboard-e2e"
   }
