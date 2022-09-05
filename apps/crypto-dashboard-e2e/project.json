@@ -1,0 +1,23 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/crypto-dashboard-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@angular-devkit/build-angular:protractor",
+      "options": {
+        "protractorConfig": "apps/crypto-dashboard-e2e/protractor.conf.js",
+        "devServerTarget": "crypto-dashboard:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "crypto-dashboard:serve:production"
+        }
+      }
+    }
+  },
+  "implicitDependencies": [
+    "crypto-dashboard"
+  ],
+  "tags": []
+}
